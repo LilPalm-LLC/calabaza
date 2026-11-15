@@ -23,7 +23,10 @@ def load_config(secrets=None, environ=None):
     nested = secrets.get("supabase", {}) if hasattr(secrets, "get") else {}
 
     def pick(secret_name, env_name):
-        return (nested.get(secret_name) if hasattr(nested, "get") else None) or environ.get(env_name)
+        nested_value = nested.get(secret_name) if hasattr(nested, "get") else None
+        top_level_value = secrets.get(secret_name) if hasattr(secrets, "get") else None
+        named_value = secrets.get(env_name) if hasattr(secrets, "get") else None
+        return nested_value or top_level_value or named_value or environ.get(env_name)
 
     url = pick("url", "SUPABASE_URL")
     key = pick("publishable_key", "SUPABASE_PUBLISHABLE_KEY")
