@@ -1,43 +1,62 @@
 # Calabaza
 
-A beginner-friendly Spanish practice app focused on Mexican Spanish, built with Streamlit.
+A mobile-friendly Spanish learning app focused on Mexican Spanish.
 
-## What’s inside
+## What’s in the app
 
-- **Flashcards:** English prompt first, optional typed recall, answer reveal, example sentence and translation, and “Got it” / “Still learning” session marks.
-- **Verb garden:** six person/number forms for *hablar*, *comer*, *vivir*, and *tener* in the present, preterite, and simple future. Uses Mexican *ustedes* for plural “you”; opens with one-at-a-time practice and a full conjugation list.
-- **Word links:** searchable connecting words, time/frequency words, and question words with short examples.
-- **Phone-friendly layout:** responsive spacing and large buttons.
+- **Flashcards:** recall-first cards with original example sentences and simple emoji illustrations.
+- **Vocabulary library:** 500 new original daily-use words and phrases in 20 batches of 25, plus the original starter set. Browse by level, topic, batch, or search Spanish and English.
+- **Progress by group:** see remembered, still-learning, and new words for each category.
+- **Verb garden:** 100 distinct useful verbs, five per batch, with six Mexican Spanish subject forms in the present, preterite, and simple future. Forms stay hidden until revealed.
+- **Sentence practice:** 100 original everyday sentence cards, five per batch, with English-first prompts, Spanish reveal, and saved review status.\n- **Word links:** connecting and question words with examples.
 
-The illustrations are original emoji cues included in the app; there are no remote image dependencies. Practice marks last only for the current Streamlit session and are not saved between visits.
+Vocabulary is included in vocabulary.py, so a separate dictionary API is not needed. Supabase is used only for sign-in and saving progress.
 
-## Run locally
+## Progress and privacy
 
-Python 3.10 or newer is recommended.
+When Supabase is configured and you sign in, the app saves only your word ID, status (known or learning), and last review timestamp. It never saves typed answers. Supabase Auth issues an email sign-in code; the app only requests codes for the one email in your local secrets configuration and sets should_create_user to false.
 
-On Windows PowerShell:
+Each progress row belongs to one Supabase Auth user. The SQL migration enables Row Level Security (RLS), grants access only to signed-in users, and applies owner-only read, insert, update, and delete policies. The app sends the signed-in user’s token and publishable key; it never uses a Supabase secret or service-role key.
 
-    python -m venv .venv
-    .\.venv\Scripts\Activate.ps1
-    pip install -r requirements.txt
-    streamlit run app.py
+Without credentials, or if the database is unavailable, practice still works but marks are session-only. A clear message appears; the app will not say that unsaved progress was saved.
 
-On macOS or Linux, activate the environment with `source .venv/bin/activate` before installing and running.
+## Set up Supabase yourself
 
-## Open it on your phone
+No Supabase project or credentials are included in this repository. Create a project only if you choose to use cloud-saved progress.
 
-A phone cannot access your computer’s `localhost`. For a quick preview while both devices use the same Wi-Fi, start Streamlit so other devices on your local network can reach it:
+1. In Supabase, create a project and open SQL Editor. Run supabase/migrations/202611140001_word_progress.sql to create the private progress table and its RLS rules.
+2. In Authentication → Users, create/invite only your own user. Keep public sign-ups disabled. Email OTP sign-in is used by the app.
+3. Copy .streamlit/secrets.example.toml to .streamlit/secrets.toml. Fill in the project URL, a publishable key, and your approved email. Never paste a secret or service-role key here.
+4. Install and start the app:
 
-    streamlit run app.py --server.address 0.0.0.0
+       python -m venv .venv
+       .\.venv\Scripts\Activate.ps1
+       pip install -r requirements.txt
+       streamlit run app.py
 
-Then open `http://<your-computer-local-IP>:8501` on your phone. Your computer’s firewall may need to allow the connection. This is a temporary local preview, not a public website.
+On macOS/Linux, activate with source .venv/bin/activate instead. The real secrets file is ignored by Git.
 
-To open the app from anywhere, it needs to be deployed to a reachable HTTPS host. Deployment is not included. After you have a hosted URL:
-- **iPhone:** open the URL in Safari, tap Share, then **Add to Home Screen**.
-- **Android:** open the URL in Chrome and choose **Add to Home screen** or **Install app** if offered.
+For a future Streamlit Community Cloud deployment, add the same values in the app’s Secrets settings. Do not commit credentials. Deployment is not included in this change.
 
-This creates a browser-based home-screen shortcut. The exact name, icon, and standalone-app behavior depend on the browser and hosting setup, so check the result on your phone.
+## Database size
 
-## Scope
+The app bundles 500 new word and phrase entries, 100 additional verb entries, 100 sentence cards, and the original starter set. These are app content, not database rows. The database stores only reviewed-word progress, so one learner’s records should be tiny. Supabase’s current Free plan lists 500 MB of database storage, but free projects can pause after a week of low activity. Check the provider’s current limits before relying on it; usage and plans can change.
 
-This starter uses sample content only. It adds no account, secrets, paid services, database, or cross-visit progress storage.
+## Tests
+
+Run Python unit tests:
+
+       python -m unittest discover -s tests -v
+
+To run the database RLS tests locally, install Docker and the Supabase CLI, then run:
+
+       supabase start
+       supabase db reset
+       supabase test db
+       supabase stop
+
+The RLS test uses two synthetic users and rolls back its fixture data. It checks owner isolation and denies unauthenticated reads/writes. No hosted project is required for that local database test.
+
+## Phone access
+
+Local Streamlit only works on the computer running it unless both devices share a local network. To reach the app away from home and add it to an iPhone home screen, deploy it to an HTTPS host later. iPhone Safari can then use Share → Add to Home Screen. Deployment is intentionally not included.
