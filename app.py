@@ -158,18 +158,15 @@ else:
             st.error("The database connection could not be created. Check the setup in README.md.")
         else:
             with st.form("request_code_form"):
-                email_input = st.text_input("Your approved email")
+                st.caption("We’ll send a one-time code to the approved email in your app settings.")
                 send_code = st.form_submit_button("Email me a sign-in code", type="primary", use_container_width=True)
             if send_code:
-                if email_input.strip().casefold() != config.allowed_email:
-                    st.error("This app is configured for one approved email address.")
-                else:
-                    try:
-                        request_email_code(client, email_input)
-                        st.session_state.pending_email = email_input.strip()
-                        st.success("Check your email for a one-time code.")
-                    except Exception:
-                        st.error("We couldn’t send a code. Check the Supabase Auth setup and try again.")
+                try:
+                    request_email_code(client, config.allowed_email)
+                    st.session_state.pending_email = config.allowed_email
+                    st.success("Check your email for a one-time code.")
+                except Exception:
+                    st.error("We couldn’t send a code. Check the Supabase Auth setup and try again.")
             pending_email = st.session_state.get("pending_email")
             if pending_email:
                 with st.form("verify_code_form"):
