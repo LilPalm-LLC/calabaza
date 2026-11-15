@@ -372,19 +372,5 @@ with sentences_tab:
         st.session_state.sentence_revealed = None
         st.rerun()
 
-with words_tab:
-    st.markdown('<div class="eyebrow">Small words, big connections</div>', unsafe_allow_html=True)
-    kind = st.selectbox("Word group", ["Connecting words", "Question words"], key="word_group")
-    query = st.text_input("Search this group", placeholder="Try y, always, why, where…", key="word_search")
-    entries = filter_words(category=kind, query=query)
-    if not entries:
-        st.info("No matches yet. Try another word or meaning.")
-    for word in entries:
-        st.markdown(
-            f'<div class="word-card"><span class="word-chip">{html.escape(word["spanish"])}</span> &nbsp; <b>{html.escape(word["english"])}</b><br><i>{html.escape(word["example"])}</i><br>{html.escape(word["example_translation"])}</div>',
-            unsafe_allow_html=True,
-        )
-        st.caption(f'{word["level"]} · {progress_label(word["id"])}')
-
 st.divider()
 st.markdown('<p class="footnote">Mexican Spanish is the default. Your typed answers are not stored.</p>', unsafe_allow_html=True)
