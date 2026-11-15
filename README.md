@@ -5,10 +5,10 @@ A mobile-friendly Spanish learning app focused on Mexican Spanish.
 ## What’s in the app
 
 - **Flashcards:** recall-first cards with original example sentences and simple emoji illustrations.
-- **Vocabulary library:** original sample words and phrases organized into A1–A2 Beginner, B1–B2 Intermediate, and C1–C2 Advanced, with practical categories and search.
+- **Vocabulary library:** 500 new original daily-use words and phrases in 20 batches of 25, plus the original starter set. Browse by level, topic, batch, or search Spanish and English.
 - **Progress by group:** see remembered, still-learning, and new words for each category.
-- **Verb garden:** six subject forms for hablar, comer, vivir, and tener in the present, preterite, and simple future.
-- **Word links:** connecting words and question words with examples.
+- **Verb garden:** 100 distinct useful verbs, five per batch, with six Mexican Spanish subject forms in the present, preterite, and simple future. Forms stay hidden until revealed.
+- **Sentence practice:** 100 original everyday sentence cards, five per batch, with English-first prompts, Spanish reveal, and saved review status.\n- **Word links:** connecting and question words with examples.
 
 Vocabulary is included in vocabulary.py, so a separate dictionary API is not needed. Supabase is used only for sign-in and saving progress.
 
@@ -40,7 +40,7 @@ For a future Streamlit Community Cloud deployment, add the same values in the ap
 
 ## Database size
 
-The app currently has 49 built-in vocabulary entries. The database stores only reviewed-word progress, so one learner’s records should be tiny. Supabase’s current Free plan lists 500 MB of database storage, but free projects can pause after a week of low activity. Check the provider’s current limits before relying on it; usage and plans can change.
+The app bundles 500 new word and phrase entries, 100 additional verb entries, 100 sentence cards, and the original starter set. These are app content, not database rows. The database stores only reviewed-word progress, so one learner’s records should be tiny. Supabase’s current Free plan lists 500 MB of database storage, but free projects can pause after a week of low activity. Check the provider’s current limits before relying on it; usage and plans can change.
 
 ## Tests
 
