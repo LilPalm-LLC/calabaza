@@ -292,7 +292,10 @@ with library_tab:
             with top_left:
                 st.markdown(f'<span class="word-chip">{word["emoji"]} {html.escape(word["spanish"])}</span> &nbsp; <b>{html.escape(word["english"])}</b>', unsafe_allow_html=True)
                 st.caption(f'{word["level"]} · {word["category"]}')
-                st.markdown(f'*{html.escape(word["example"])}*  \n{html.escape(word["example_translation"])}')
+                if word.get("example"):
+                    st.markdown(f'*{html.escape(word["example"])}*  \n{html.escape(word["example_translation"])}')
+                if word.get("batch_title"):
+                    st.caption("Batch " + str(word["batch_number"]).zfill(2) + " · " + word["batch_title"])
             with top_right:
                 st.markdown(f'<span class="status-pill">{progress_label(word["id"])}</span>', unsafe_allow_html=True)
                 if st.button("Got it", key=f"known_{word['id']}", use_container_width=True):
