@@ -109,6 +109,7 @@ if config:
         except Exception:
             st.session_state.pop("supabase_session", None)
             st.session_state.pop("pending_email", None)
+            st.session_state.session_progress = {}
             st.warning("We couldn’t restore saved progress. Sign in again or check the database setup.")
             user_id = None
             progress_store = None
@@ -144,6 +145,7 @@ elif user_id:
                 pass
             st.session_state.pop("supabase_session", None)
             st.session_state.pop("pending_email", None)
+            st.session_state.session_progress = {}
             st.rerun()
 else:
     with st.expander("Sign in to save your progress", expanded=True):
@@ -287,11 +289,11 @@ with library_tab:
             with top_right:
                 st.markdown(f'<span class="status-pill">{progress_label(word["id"])}</span>', unsafe_allow_html=True)
                 if st.button("Got it", key=f"known_{word['id']}", use_container_width=True):
-                    mark_progress(word["id"], "known")
-                    st.rerun()
+                    if mark_progress(word["id"], "known"):
+                        st.rerun()
                 if st.button("Review", key=f"learning_{word['id']}", use_container_width=True):
-                    mark_progress(word["id"], "learning")
-                    st.rerun()
+                    if mark_progress(word["id"], "learning"):
+                        st.rerun()
 
 with verbs_tab:
     st.markdown('<div class="eyebrow">Six subject forms</div>', unsafe_allow_html=True)
