@@ -4,6 +4,9 @@ import random
 
 import streamlit as st
 
+from verbs import VERBS, SUBJECTS, TENSES, conjugate
+from sentences import SENTENCES
+
 from storage import (
     ProgressStore,
     create_user_client,
@@ -16,6 +19,8 @@ from vocabulary import (
     CATEGORIES,
     LEVELS,
     VOCABULARY,
+    BATCHES,
+    BATCH_TITLES,
     filter_words,
     summarize_progress,
 )
@@ -48,7 +53,7 @@ h1,h2,h3 { color:var(--ink); } h1 { font-family:Georgia,serif; letter-spacing:-.
 .word-chip { display:inline-block; background:var(--leaf); color:var(--green); padding:.28rem .7rem; border-radius:99px; font-weight:750; }
 .word-card { background:#fffefa; border:1px solid #ece8dc; border-radius:18px; padding:.9rem 1rem; margin:.55rem 0; }
 .status-pill { background:#fff0df; color:#80511f; border-radius:99px; padding:.2rem .55rem; font-size:.78rem; font-weight:700; }
-[data-testid="stTabs"] [role="tablist"] { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:.28rem; background:#fffefa; border:1px solid #eee8dc; border-radius:18px; padding:.32rem; }
+[data-testid="stTabs"] [role="tablist"] { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:.28rem; background:#fffefa; border:1px solid #eee8dc; border-radius:18px; padding:.32rem; }
 [data-testid="stTabs"] button[role="tab"] { justify-content:center; min-height:48px; border-radius:13px; font-size:.86rem; font-weight:750; white-space:nowrap; }
 [data-testid="stTabs"] button[role="tab"][aria-selected="true"] { background:var(--green); color:white; }
 [data-testid="stTabs"] [data-baseweb="tab-highlight"],[data-testid="stTabs"] [data-baseweb="tab-border"] { display:none; }
@@ -208,8 +213,8 @@ def progress_label(word_id):
     return "Got it" if row.get("status") == "known" else "Still learning"
 
 
-flashcards_tab, library_tab, verbs_tab, words_tab = st.tabs(
-    ["🗂️ Cards", "🌼 Library", "🌱 Verbs", "🔗 Words"]
+flashcards_tab, library_tab, verbs_tab, words_tab, sentences_tab = st.tabs(
+    ["🗂️ Cards", "🌼 Library", "🌱 Verbs", "🔗 Words", "💬 Sentences"]
 )
 
 with flashcards_tab:
@@ -260,7 +265,9 @@ with flashcards_tab:
 with library_tab:
     st.markdown('<div class="eyebrow">Your word garden</div>', unsafe_allow_html=True)
     level = st.selectbox("Learning level", ["All levels", *LEVELS], key="library_level")
-    all_for_level = filter_words(level=level)
+    selected_batch = st.selectbox("Study batch", ["All batches", *BATCH_TITLES], key="library_batch")
+    batch_number = "All batches" if selected_batch == "All batches" else selected_batch
+    all_for_level = filter_words(level=level, batch=batch_number)
     st.markdown("#### Progress by category")
     for category_name in CATEGORIES:
         group = [word for word in all_for_level if word["category"] == category_name]
@@ -273,7 +280,7 @@ with library_tab:
 
     category = st.selectbox("Category", ["All categories", *CATEGORIES], key="library_category")
     query = st.text_input("Search Spanish or English", placeholder="Try café, often, where…", key="library_search")
-    words = filter_words(level=level, category=category, query=query)
+    words = filter_words(level=level, category=category, query=query, batch=batch_number)
     current_summary = summarize_progress(words, progress)
     st.caption(f"{current_summary['total']} words and phrases")
     st.progress(current_summary["known"] / current_summary["total"] if current_summary["total"] else 0)
@@ -296,74 +303,71 @@ with library_tab:
                         st.rerun()
 
 with verbs_tab:
-    st.markdown('<div class="eyebrow">Six subject forms</div>', unsafe_allow_html=True)
-    verbs = {
-        "hablar": {
-            "meaning": "to speak",
-            "forms": {
-                "Present": ["hablo", "hablas", "habla", "hablamos", "hablan", "hablan"],
-                "Preterite": ["hablé", "hablaste", "habló", "hablamos", "hablaron", "hablaron"],
-                "Simple future": ["hablaré", "hablarás", "hablará", "hablaremos", "hablarán", "hablarán"],
-            },
-            "examples": {"Present": ("Hablo español en casa.", "I speak Spanish at home."), "Preterite": ("Ayer hablé con Ana.", "Yesterday I spoke with Ana."), "Simple future": ("Mañana hablaré con el maestro.", "Tomorrow I will speak with the teacher.")},
-        },
-        "comer": {
-            "meaning": "to eat",
-            "forms": {
-                "Present": ["como", "comes", "come", "comemos", "comen", "comen"],
-                "Preterite": ["comí", "comiste", "comió", "comimos", "comieron", "comieron"],
-                "Simple future": ["comeré", "comerás", "comerá", "comeremos", "comerán", "comerán"],
-            },
-            "examples": {"Present": ("Comemos temprano.", "We eat early."), "Preterite": ("Ayer comí tacos.", "Yesterday I ate tacos."), "Simple future": ("Mañana comeremos en casa.", "Tomorrow we will eat at home.")},
-        },
-        "vivir": {
-            "meaning": "to live",
-            "forms": {
-                "Present": ["vivo", "vives", "vive", "vivimos", "viven", "viven"],
-                "Preterite": ["viví", "viviste", "vivió", "vivimos", "vivieron", "vivieron"],
-                "Simple future": ["viviré", "vivirás", "vivirá", "viviremos", "vivirán", "vivirán"],
-            },
-            "examples": {"Present": ("Vivo en México.", "I live in Mexico."), "Preterite": ("Vivimos en Puebla un año.", "We lived in Puebla for a year."), "Simple future": ("El próximo año viviré cerca del trabajo.", "Next year I will live near work.")},
-        },
-        "tener": {
-            "meaning": "to have",
-            "forms": {
-                "Present": ["tengo", "tienes", "tiene", "tenemos", "tienen", "tienen"],
-                "Preterite": ["tuve", "tuviste", "tuvo", "tuvimos", "tuvieron", "tuvieron"],
-                "Simple future": ["tendré", "tendrás", "tendrá", "tendremos", "tendrán", "tendrán"],
-            },
-            "examples": {"Present": ("Tengo dos hermanas.", "I have two sisters."), "Preterite": ("Ayer tuve mucho trabajo.", "Yesterday I had a lot of work."), "Simple future": ("Mañana tendré tiempo.", "Tomorrow I will have time.")},
-        },
-    }
-    verb = st.selectbox("Choose a verb", list(verbs), format_func=lambda v: f"{v.title()} — {verbs[v]['meaning']}")
-    tense = st.selectbox("Choose a tense", ["Present", "Preterite", "Simple future"])
-    st.markdown('<div class="soft-note"><b>Present</b>: now or a usual action. <b>Preterite</b>: a completed past action. <b>Simple future</b>: what will happen. Mexican Spanish uses <i>ustedes</i> for plural “you”; <i>vosotros</i> is not used in everyday Mexican Spanish.</div>', unsafe_allow_html=True)
-    people = [
-        ("yo", "I"), ("tú", "you, informal singular"), ("él / ella / usted", "he / she / you, formal"),
-        ("nosotros / nosotras", "we"), ("ustedes", "you, plural in Mexico"), ("ellos / ellas", "they"),
-    ]
-    key = (verb, tense)
+    st.markdown('<div class="eyebrow">100 useful verbs · six subject forms</div>', unsafe_allow_html=True)
+    selected_batch = st.selectbox("Verb batch", ["All batches", *BATCH_TITLES], key="verb_batch")
+    batch_no = None if selected_batch == "All batches" else int(selected_batch.split()[1])
+    verbs_for_batch = [verb for verb in VERBS if batch_no is None or verb["batch_number"] == batch_no]
+    verb_id = st.selectbox("Choose a verb", [v["id"] for v in verbs_for_batch], format_func=lambda key: next(v["infinitive"] + " — " + v["english"] for v in verbs_for_batch if v["id"] == key), key="verb_choice")
+    verb = next(v for v in verbs_for_batch if v["id"] == verb_id)
+    tense = st.selectbox("Choose a tense", list(TENSES), key="verb_tense")
+    st.markdown('<div class="soft-note"><b>Present</b>: now or usual actions. <b>Preterite</b>: completed past actions. <b>Simple future</b>: what will happen. Mexican Spanish uses <i>ustedes</i> for plural “you”; everyday Mexican Spanish does not use <i>vosotros</i>.</div>', unsafe_allow_html=True)
+    key = (verb_id, tense)
     if st.session_state.get("verb_prompt") != key:
         st.session_state.verb_prompt = key
-        st.session_state.verb_subject_index = random.randrange(6)
         st.session_state.verb_revealed = False
-    subject_index = st.session_state.verb_subject_index
-    person, gloss = people[subject_index]
-    forms = verbs[verb]["forms"][tense]
-    st.markdown(f'<div class="card"><div class="prompt">{tense} · {gloss}</div><div class="answer">{verb}</div></div>', unsafe_allow_html=True)
-    if st.button("Reveal this form", type="primary", use_container_width=True, key="reveal_verb"):
+    st.markdown(f'<div class="card"><div class="prompt">{tense} · {verb["english"]}</div><div class="answer">{html.escape(verb["infinitive"])}</div></div>', unsafe_allow_html=True)
+    if st.button("Reveal six forms", type="primary", use_container_width=True, key="reveal_all_verb"):
         st.session_state.verb_revealed = True
+    forms = conjugate(verb["infinitive"], tense)
     if st.session_state.get("verb_revealed"):
-        st.markdown(f'<div class="card"><div class="prompt">{person}</div><div class="answer">{forms[subject_index]}</div></div>', unsafe_allow_html=True)
-    example_es, example_en = verbs[verb]["examples"][tense]
-    st.markdown(f'<div class="soft-note"><b>Example</b><br><i>{example_es}</i><br>{example_en}</div>', unsafe_allow_html=True)
-    if st.button("Practice another subject", use_container_width=True):
-        st.session_state.verb_subject_index = (subject_index + 1) % 6
-        st.session_state.verb_revealed = False
-        st.rerun()
-    with st.expander("Show all six forms"):
-        for index, (subject, gloss) in enumerate(people):
+        for index, (subject, gloss) in enumerate(SUBJECTS):
             st.markdown(f"**{subject}** · {gloss} — **{forms[index]}**")
+    st.caption(f'Batch {verb["batch_number"]:02d} · {verb["level"]}')
+    st.info("Each verb is grouped in the same 20 study batches as the vocabulary. Sentence practice supplies short real-life examples for these topics.")
+
+with words_tab:
+    st.markdown('<div class="eyebrow">Small words, big connections</div>', unsafe_allow_html=True)
+    kind = st.selectbox("Word group", ["Connecting words", "Question words"], key="word_group")
+    query = st.text_input("Search this group", placeholder="Try y, always, why, where…", key="word_search")
+    entries = filter_words(category=kind, query=query)
+    if not entries:
+        st.info("No matches yet. Try another word or meaning.")
+    for word in entries:
+        st.markdown(f'<div class="word-card"><span class="word-chip">{html.escape(word["spanish"])}</span> &nbsp; <b>{html.escape(word["english"])}</b><br><i>{html.escape(word["example"])}</i><br>{html.escape(word["example_translation"])}</div>', unsafe_allow_html=True)
+        st.caption(f'{word["level"]} · {progress_label(word["id"])}')
+
+with sentences_tab:
+    st.markdown('<div class="eyebrow">100 everyday sentences · five per batch</div>', unsafe_allow_html=True)
+    sentence_batch = st.selectbox("Sentence batch", BATCH_TITLES, key="sentence_batch")
+    sentence_batch_no = int(sentence_batch.split()[1])
+    sentences = [s for s in SENTENCES if s["batch_number"] == sentence_batch_no]
+    if "sentence_index" not in st.session_state:
+        st.session_state.sentence_index = 0
+    sentence_index = st.session_state.sentence_index % len(sentences)
+    sentence = sentences[sentence_index]
+    st.markdown(f'<div class="card"><div class="prompt">{sentence["level"]} · Sentence {sentence_index + 1} of {len(sentences)}</div><h2>{html.escape(sentence["english"])}</h2></div>', unsafe_allow_html=True)
+    if st.button("Reveal Spanish", type="primary", use_container_width=True, key="reveal_sentence"):
+        st.session_state.sentence_revealed = sentence["id"]
+    if st.session_state.get("sentence_revealed") == sentence["id"]:
+        st.markdown(f'<div class="card"><div class="answer">{html.escape(sentence["spanish"])}</div></div>', unsafe_allow_html=True)
+        st.caption(f'Your status: {progress_label(sentence["id"])}')
+        left, right = st.columns(2)
+        with left:
+            if st.button("Still learning", key="sentence_learning", use_container_width=True):
+                if mark_progress(sentence["id"], "learning"):
+                    st.session_state.sentence_index = (sentence_index + 1) % len(sentences)
+                    st.session_state.sentence_revealed = None
+                    st.rerun()
+        with right:
+            if st.button("Got it ✓", key="sentence_known", type="primary", use_container_width=True):
+                if mark_progress(sentence["id"], "known"):
+                    st.session_state.sentence_index = (sentence_index + 1) % len(sentences)
+                    st.session_state.sentence_revealed = None
+                    st.rerun()
+    if st.button("Next sentence", key="next_sentence", use_container_width=True):
+        st.session_state.sentence_index = (sentence_index + 1) % len(sentences)
+        st.session_state.sentence_revealed = None
+        st.rerun()
 
 with words_tab:
     st.markdown('<div class="eyebrow">Small words, big connections</div>', unsafe_allow_html=True)
