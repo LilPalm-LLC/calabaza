@@ -7073,8 +7073,8 @@ VERB_VOCABULARY = [
   },
   {
     "id": "verb_v084",
-    "spanish": "pagar",
-    "english": "to pay",
+    "spanish": "decidir",
+    "english": "to decide",
     "example": "",
     "example_translation": "",
     "level": "B1–B2 · Intermediate",
