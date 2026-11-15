@@ -722,7 +722,9 @@ def conjugate(infinitive, tense):
         forms = list(_PRESENT[verb]) if verb in _PRESENT else _regular_present(base, ending)
         if verb not in _PRESENT and verb in _STEM:
             old, new = _STEM[verb]
-            forms = [f.replace(old, new, 1) if i != 3 else f for i, f in enumerate(forms)]
+            pos = base.rfind(old)
+            changed_base = base[:pos] + new + base[pos + len(old):]
+            forms = [changed_base + form[len(base):] if i != 3 else form for i, form in enumerate(forms)]
     elif tense == "Preterite":
         if verb in _PRETERITE:
             forms = list(_PRETERITE[verb])
