@@ -585,8 +585,8 @@ VERBS = [
   },
   {
     "id": "v084",
-    "infinitive": "pagar",
-    "english": "to pay",
+    "infinitive": "decidir",
+    "english": "to decide",
     "batch_number": 17,
     "level": "B1–B2 · Intermediate"
   },
@@ -704,86 +704,48 @@ VERBS = [
   }
 ]
 TENSES = ("Present", "Preterite", "Simple future")
-SUBJECTS = (
-    ("yo", "I"), ("tú", "you, informal singular"),
-    ("él / ella / usted", "he / she / you, formal"),
-    ("nosotros / nosotras", "we"), ("ustedes", "you, plural in Mexico"),
-    ("ellos / ellas", "they"),
-)
-_IRREGULAR = {
- "ser": {"Present":["soy","eres","es","somos","son","son"],"Preterite":["fui","fuiste","fue","fuimos","fueron","fueron"]},
- "ir": {"Present":["voy","vas","va","vamos","van","van"],"Preterite":["fui","fuiste","fue","fuimos","fueron","fueron"]},
- "estar": {"Present":["estoy","estás","está","estamos","están","están"],"Preterite":["estuve","estuviste","estuvo","estuvimos","estuvieron","estuvieron"]},
- "tener": {"Present":["tengo","tienes","tiene","tenemos","tienen","tienen"],"Preterite":["tuve","tuviste","tuvo","tuvimos","tuvieron","tuvieron"]},
- "hacer": {"Present":["hago","haces","hace","hacemos","hacen","hacen"],"Preterite":["hice","hiciste","hizo","hicimos","hicieron","hicieron"]},
- "decir": {"Present":["digo","dices","dice","decimos","dicen","dicen"],"Preterite":["dije","dijiste","dijo","dijimos","dijeron","dijeron"]},
- "poder": {"Present":["puedo","puedes","puede","podemos","pueden","pueden"],"Preterite":["pude","pudiste","pudo","pudimos","pudieron","pudieron"]},
- "querer": {"Present":["quiero","quieres","quiere","queremos","quieren","quieren"],"Preterite":["quise","quisiste","quiso","quisimos","quisieron","quisieron"]},
- "venir": {"Present":["vengo","vienes","viene","venimos","vienen","vienen"],"Preterite":["vine","viniste","vino","vinimos","vinieron","vinieron"]},
- "dar": {"Present":["doy","das","da","damos","dan","dan"],"Preterite":["di","diste","dio","dimos","dieron","dieron"]},
- "ver": {"Present":["veo","ves","ve","vemos","ven","ven"],"Preterite":["vi","viste","vio","vimos","vieron","vieron"]},
- "saber": {"Present":["sé","sabes","sabe","sabemos","saben","saben"],"Preterite":["supe","supiste","supo","supimos","supieron","supieron"]},
- "poner": {"Present":["pongo","pones","pone","ponemos","ponen","ponen"],"Preterite":["puse","pusiste","puso","pusimos","pusieron","pusieron"]},
- "salir": {"Present":["salgo","sales","sale","salimos","salen","salen"]},
- "decir": {"Future":["diré","dirás","dirá","diremos","dirán","dirán"]},
- "hacer": {"Future":["haré","harás","hará","haremos","harán","harán"]},
- "tener": {"Future":["tendré","tendrás","tendrá","tendremos","tendrán","tendrán"]},
- "poder": {"Future":["podré","podrás","podrá","podremos","podrán","podrán"]},
- "querer": {"Future":["querré","querrás","querrá","querremos","querrán","querrán"]},
- "venir": {"Future":["vendré","vendrás","vendrá","vendremos","vendrán","vendrán"]},
- "poner": {"Future":["pondré","pondrás","pondrá","pondremos","pondrán","pondrán"]},
- "salir": {"Future":["saldré","saldrás","saldrá","saldremos","saldrán","saldrán"]},
- "decir_future": {},
-}
-_FUTURE_STEMS = {"decir":"dir","hacer":"har","tener":"tendr","poder":"podr","querer":"querr","venir":"vendr","poner":"pondr","salir":"saldr","saber":"sabr","haber":"habr","valer":"valdr"}
+SUBJECTS = (("yo","I"),("tú","you, informal singular"),("él / ella / usted","he / she / you, formal"),("nosotros / nosotras","we"),("ustedes","you, plural in Mexico"),("ellos / ellas","they"))
+_PRESENT = {"ser":["soy","eres","es","somos","son","son"],"estar":["estoy","estás","está","estamos","están","están"],"ir":["voy","vas","va","vamos","van","van"],"tener":["tengo","tienes","tiene","tenemos","tienen","tienen"],"hacer":["hago","haces","hace","hacemos","hacen","hacen"],"decir":["digo","dices","dice","decimos","dicen","dicen"],"poder":["puedo","puedes","puede","podemos","pueden","pueden"],"querer":["quiero","quieres","quiere","queremos","quieren","quieren"],"venir":["vengo","vienes","viene","venimos","vienen","vienen"],"dar":["doy","das","da","damos","dan","dan"],"ver":["veo","ves","ve","vemos","ven","ven"],"saber":["sé","sabes","sabe","sabemos","saben","saben"],"conocer":["conozco","conoces","conoce","conocemos","conocen","conocen"],"poner":["pongo","pones","pone","ponemos","ponen","ponen"],"salir":["salgo","sales","sale","salimos","salen","salen"],"traer":["traigo","traes","trae","traemos","traen","traen"],"oír":["oigo","oyes","oye","oímos","oyen","oyen"],"sonreír":["sonrío","sonríes","sonríe","sonreímos","sonríen","sonríen"],"gustar":["gusto","gustas","gusta","gustamos","gustan","gustan"]}
+_PRETERITE = {"ser":["fui","fuiste","fue","fuimos","fueron","fueron"],"ir":["fui","fuiste","fue","fuimos","fueron","fueron"],"estar":["estuve","estuviste","estuvo","estuvimos","estuvieron","estuvieron"],"tener":["tuve","tuviste","tuvo","tuvimos","tuvieron","tuvieron"],"hacer":["hice","hiciste","hizo","hicimos","hicieron","hicieron"],"decir":["dije","dijiste","dijo","dijimos","dijeron","dijeron"],"poder":["pude","pudiste","pudo","pudimos","pudieron","pudieron"],"querer":["quise","quisiste","quiso","quisimos","quisieron","quisieron"],"venir":["vine","viniste","vino","vinimos","vinieron","vinieron"],"dar":["di","diste","dio","dimos","dieron","dieron"],"ver":["vi","viste","vio","vimos","vieron","vieron"],"saber":["supe","supiste","supo","supimos","supieron","supieron"],"poner":["puse","pusiste","puso","pusimos","pusieron","pusieron"],"traer":["traje","trajiste","trajo","trajimos","trajeron","trajeron"],"andar":["anduve","anduviste","anduvo","anduvimos","anduvieron","anduvieron"],"leer":["leí","leíste","leyó","leímos","leyeron","leyeron"],"oír":["oí","oíste","oyó","oímos","oyeron","oyeron"],"sonreír":["sonreí","sonreíste","sonrió","sonreímos","sonrieron","sonrieron"]}
+_FUTURE_STEMS = {"decir":"dir","hacer":"har","tener":"tendr","poder":"podr","querer":"querr","venir":"vendr","poner":"pondr","salir":"saldr","saber":"sabr","valer":"valdr"}
 _STEM = {"pensar":("e","ie"),"sentir":("e","ie"),"dormir":("o","ue"),"pedir":("e","i"),"jugar":("u","ue"),"encontrar":("o","ue"),"empezar":("e","ie"),"cerrar":("e","ie"),"costar":("o","ue"),"probar":("o","ue"),"volver":("o","ue"),"recordar":("o","ue"),"entender":("e","ie"),"seguir":("e","i"),"repetir":("e","i"),"elegir":("e","i"),"despertarse":("e","ie"),"acostarse":("o","ue"),"sentarse":("e","ie"),"divertirse":("e","ie"),"vestirse":("e","i")}
-def _regular(base, ending):
-    if ending == "ar":
-        return [base+"o",base+"as",base+"a",base+"amos",base+"an",base+"an"]
-    if ending == "er":
-        return [base+"o",base+"es",base+"e",base+"emos",base+"en",base+"en"]
+def _regular_present(base, ending):
+    if ending == "ar": return [base+"o",base+"as",base+"a",base+"amos",base+"an",base+"an"]
+    if ending == "er": return [base+"o",base+"es",base+"e",base+"emos",base+"en",base+"en"]
     return [base+"o",base+"es",base+"e",base+"imos",base+"en",base+"en"]
 def conjugate(infinitive, tense):
-    """Return six forms in yo, tú, él/ella/usted, nosotros, ustedes, ellos order."""
+    """Six Mexican Spanish subject forms, in SUBJECTS order."""
     reflexive = infinitive.endswith("se")
-    stem_inf = infinitive[:-2] if reflexive else infinitive
-    ending = stem_inf[-2:]
-    base = stem_inf[:-2]
+    verb = infinitive[:-2] if reflexive else infinitive
+    ending, base = verb[-2:], verb[:-2]
     if tense == "Present":
-        forms = _IRREGULAR.get(stem_inf, {}).get("Present")
-        if not forms:
-            forms = _regular(base, ending)
-            if stem_inf in _STEM:
-                old,new = _STEM[stem_inf]
-                forms = [re.sub(old, new, f, count=1) if i != 3 else f for i,f in enumerate(forms)]
-            if stem_inf in {"hablar"}:
-                pass
-            if stem_inf in {"conocer"}: forms[0] = "conozco"
-            if stem_inf in {"traer"}: forms[0] = "traigo"
-            if stem_inf in {"oír"}: forms = ["oigo","oyes","oye","oímos","oyen","oyen"]
-            if stem_inf == "sonreír": forms = ["sonrío","sonríes","sonríe","sonreímos","sonríen","sonríen"]
+        forms = list(_PRESENT[verb]) if verb in _PRESENT else _regular_present(base, ending)
+        if verb not in _PRESENT and verb in _STEM:
+            old, new = _STEM[verb]
+            forms = [f.replace(old, new, 1) if i != 3 else f for i, f in enumerate(forms)]
     elif tense == "Preterite":
-        forms = _IRREGULAR.get(stem_inf, {}).get("Preterite")
-        if not forms:
-            if ending == "ar": forms=[base+"é",base+"aste",base+"ó",base+"amos",base+"aron",base+"aron"]
-            elif ending == "er": forms=[base+"í",base+"iste",base+"ió",base+"imos",base+"ieron",base+"ieron"]
-            else: forms=[base+"í",base+"iste",base+"ió",base+"imos",base+"ieron",base+"ieron"]
-            if stem_inf in {"dormir","pedir","sentir","seguir","elegir","repetir"}:
-                forms[2] = forms[2].replace("o","u") if stem_inf=="dormir" else forms[2].replace("e","i")
-                forms[4] = forms[4].replace("o","u") if stem_inf=="dormir" else forms[4].replace("e","i")
-                forms[5]=forms[4]
-            if stem_inf == "traer": forms=["traje","trajiste","trajo","trajimos","trajeron","trajeron"]
-            if stem_inf == "andar": forms=["anduve","anduviste","anduvo","anduvimos","anduvieron","anduvieron"]
-            if stem_inf == "leer": forms=["leí","leíste","leyó","leímos","leyeron","leyeron"]
-            if stem_inf == "oír": forms=["oí","oíste","oyó","oímos","oyeron","oyeron"]
-            if stem_inf == "sonreír": forms=["sonreí","sonreíste","sonrió","sonreímos","sonrieron","sonrieron"]
-    else:
-        special = _IRREGULAR.get(stem_inf, {}).get("Future")
-        if special: forms=special
+        if verb in _PRETERITE:
+            forms = list(_PRETERITE[verb])
+        elif ending == "ar":
+            forms = [base+"é",base+"aste",base+"ó",base+"amos",base+"aron",base+"aron"]
         else:
-            fut = _FUTURE_STEMS.get(stem_inf, stem_inf)
-            forms=[fut+"é",fut+"ás",fut+"á",fut+"emos",fut+"án",fut+"án"]
+            forms = [base+"í",base+"iste",base+"ió",base+"imos",base+"ieron",base+"ieron"]
+            if verb in {"dormir","pedir","sentir","seguir","elegir","repetir"}:
+                vowel = "o" if verb == "dormir" else "e"
+                changed = "u" if vowel == "o" else "i"
+                forms[2] = forms[2].replace(vowel, changed, 1)
+                forms[4] = forms[4].replace(vowel, changed, 1)
+                forms[5] = forms[4]
+            if verb == "leer": forms = ["leí","leíste","leyó","leímos","leyeron","leyeron"]
+            if verb == "empezar": forms[0] = "empecé"
+            if verb == "llegar": forms[0] = "llegué"
+            if verb == "buscar": forms[0] = "busqué"
+            if verb == "pagar": forms[0] = "pagué"
+    elif tense == "Simple future":
+        stem = _FUTURE_STEMS.get(verb, verb)
+        forms = [stem+"é",stem+"ás",stem+"á",stem+"emos",stem+"án",stem+"án"]
+    else:
+        raise ValueError("Unsupported tense")
     if reflexive:
-        pronouns=["me","te","se","nos","se","se"]
-        forms=[pronouns[i]+" "+form for i,form in enumerate(forms)]
+        forms = [p+" "+f for p, f in zip(("me","te","se","nos","se","se"), forms)]
     return forms
